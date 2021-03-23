@@ -69,7 +69,7 @@ void setup() {
   pinMode(uPin, OUTPUT);
   pinMode(yPin, INPUT);
   setControlLimits(0, 255); // 255 = 5V PWM
-  setSampleTime(1000);
+  setSampleTime(100);
   setTunings(0.05, 0.5, 0.1);
 }  
                             
