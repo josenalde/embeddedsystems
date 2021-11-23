@@ -1,7 +1,7 @@
 //******************************************************************************/
 //**************************Para Executar no hardware***************************/
 //******************************************************************************/
-
+//by Alyson, Gustavo Fonseca, Jodeilson, Josenalde Oliveira - TADS@UFRN - Turma 2021.2 (Sistemas Embarcados)
 #include <stdio.h>
 #include <string.h>
 #include "altera_avalon_pio_regs.h"
@@ -10,6 +10,20 @@
 #include <altera_avalon_lcd_16207_fd.h>
 #include "system.h"
 #include <unistd.h> // usleep.h
+
+#define T 0x07
+#define A 0x08
+#define D 0x21
+#define S 0x12
+#define U 0x41
+#define F 0x0E
+#define R 0x2F
+#define N 0x2B
+#define G 0x10
+#define V 0x41
+#define O 0x40
+#define L 0x47
+#define Y 0x11
 
 void swap(char *x, char *y);
 char* itoa(int value, char* buffer, int base);
@@ -24,7 +38,10 @@ int main() {
     O controlador LCD pode ser facilmente integrado à arquitetura no QSYS. Se escolher no BSP Reduced Drives, não usa LCD*/
 
     typedef unsigned char alt_u8;
-    alt_u8 palavra[8] = {0x07,0x08,0x21,0x12,0x41,0x0E,0x2F,0x2B}; // tAdSUFrn
+    //alt_u8 palavra[15] = {T,A,D,S,U,F,R,N,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}; // tAdSUFrn
+    //alt_u8 palavra[15] = {G,U,S,T,A,V,O,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}; // gUStAUO
+    alt_u8 palavra[15] = {A,L,Y,S,O,N,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}; // tAdSUFrn
+
     int sw1, swInputs, cont;
     char left_dir[] = "<<<<<";
     char right_dir[] = ">>>>>";
@@ -33,12 +50,12 @@ int main() {
     while(1) { // Este laço exibe permanentemente a frase TADS UFRN nos displays de 7 segmentos
 
     	swInputs = IORD_ALTERA_AVALON_PIO_DATA(SWITCHES_BASE); //17 bits (1 é o sw17 usado para reset do cpu)
-    	sw1 = (swInputs & 0x00001); // xxx 0 0000 0000 0000 0001
+    	sw1 = (swInputs & 0x00001); // xxx 0 0000 0000 0000 0010
     	if (!flag) {
-    	   cont = (sw1 == 1 ? 7 : 0);
+    	   cont = (sw1 == 1 ? 7 : 0); // 1 - DIREITA, 0 - ESQUERDA
     	   flag = 1;
     	}
-    	(sw1 == 0)? lcd_display(left_dir) : lcd_display(right_dir);
+    	sw1 == 0? lcd_display(left_dir) : lcd_display(right_dir);
 
     	IOWR_ALTERA_AVALON_PIO_DATA(HEX7_BASE, palavra[cont]); // t
         IOWR_ALTERA_AVALON_PIO_DATA(HEX6_BASE, palavra[cont+1]); // A
@@ -53,20 +70,10 @@ int main() {
         	(sw1 == 0)? cont++ : cont--;
         }
         usleep(500000); //50000
-        
-        if((sw1 == 1 && cont < 0) || (sw1 == 0 && cont == 8)) {
-            //cont = 7;
-            //lcd_display(right_dir);
-            flag = 0;
-            printf("Entrei com cont: %d e sw1: %d\n", cont, sw1);
-            //fprintf(lcd_d, ">>>>> \n");
-        }
 
-        //if(cont == 8 && sw1 == 0) {
-        //    cont = 0;
-        //    lcd_display(left_dir);
-            //fprintf(lcd_d, "<<<<< \n");
-        //}
+        if((sw1 == 1 && cont < 0) || (sw1 == 0 && cont == 8)) {
+            flag = 0;
+        }
     }
     return 0;
 }
@@ -173,8 +180,6 @@ char* reverse(char *buffer, int i, int j)
 }
 
 void  lcd_display(char *a) {
-  //exibe no console
-  printf("Ciclo n.: %s\n", a);
   lcd_init(); //para ir limpando a cada iteração, senão sobrepõe
   int w;
   for (w = 0; w < strlen(a); w++) {
