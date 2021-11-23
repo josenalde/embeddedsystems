@@ -33,13 +33,12 @@ int main() {
     while(1) { // Este laço exibe permanentemente a frase TADS UFRN nos displays de 7 segmentos
 
     	swInputs = IORD_ALTERA_AVALON_PIO_DATA(SWITCHES_BASE); //17 bits (1 é o sw17 usado para reset do cpu)
-    	sw1 = (swInputs & 0x00001); // xxx 0 0000 0000 0000 0010
+    	sw1 = (swInputs & 0x00001); // xxx 0 0000 0000 0000 0001
     	if (!flag) {
     	   cont = (sw1 == 1 ? 7 : 0);
-    	   printf("cont: %d \n", cont);
     	   flag = 1;
     	}
-    	sw1 == 0? lcd_display(left_dir) : lcd_display(right_dir);
+    	(sw1 == 0)? lcd_display(left_dir) : lcd_display(right_dir);
 
     	IOWR_ALTERA_AVALON_PIO_DATA(HEX7_BASE, palavra[cont]); // t
         IOWR_ALTERA_AVALON_PIO_DATA(HEX6_BASE, palavra[cont+1]); // A
@@ -51,11 +50,10 @@ int main() {
         IOWR_ALTERA_AVALON_PIO_DATA(HEX0_BASE, palavra[cont+7]); // n
 
         if (flag) {
-        	printf("entrei para alterar o cont: \n");
         	(sw1 == 0)? cont++ : cont--;
         }
         usleep(500000); //50000
-        printf("cont fora: %d e sw fora: %d\n", cont,sw1);
+        
         if((sw1 == 1 && cont < 0) || (sw1 == 0 && cont == 8)) {
             //cont = 7;
             //lcd_display(right_dir);
