@@ -30,8 +30,8 @@ cada uma das quais consiste em um ou mais frames (quadros) contendo os dados que
 #include <WiFi.h>
 //#include <SocketIOclient.h>
 
-const char* ssid = "servos_superior";
-const char* password = "discipulo";
+const char* ssid = "xxxx";
+const char* password = "xxxxx";
 
 using namespace websockets; //to use WebsocketsClient
 
@@ -62,7 +62,7 @@ void setup() {
     
     client.setCACert(ssl_ca_cert);
     //bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
-    bool connected = client.connect("http://192.168.1.9:3000/");
+    bool connected = client.connect("ws://ip:port/"); //route uri
     Serial.println(connected);
     if (connected) {
         Serial.println("Connected");
