@@ -2,13 +2,18 @@ volatile int rpm;
 /* volatile plays an important role in C programming as the compiler can’t guess about the value. 
 The main reason behind using volatile is that it can change value any time a user wants it to be changed or
 when another thread is running but using the same variable.
-It is therefore useful when interrupt service routines can change variable values, instead of the code itself
+It is therefore useful when interrupt service routines can change variable values, instead of the code itself. Moreover, it is used to exchange messages between main code
+and ISRs
 
 See examples and explanation here: https://www.educba.com/volatile-in-c/
 */
 
+// quando se usa botões para interrupção, é comum prevenir o efeito bouncing (trepidação do botão), definindo um tempo
+#define DEBOUNCETIME 10 //tempo máximo de debounce para o botão (ms)
+
 unsigned long elapsedTime = 0;
 int intervalTimer = 1000; //1s
+
 void setup()
 {
    Serial.begin(115200);//Inicia a Serial.
@@ -23,7 +28,7 @@ void setup()
 }
 void loop()
 {
-   if (millis() - elapsedTime >= intervalTimer) {
+   if (millis() - elapsedTime >= intervalTimer) { // ou debouncetime
       Serial.print(rpm * 30);//Mostra o RPM.
       Serial.println(" RPM");//Mostra o RPM.
       elapsedTime = millis(); //reset
