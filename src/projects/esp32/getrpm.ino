@@ -45,3 +45,5 @@ void IRAM_ATTR ctt() {
    rpm++;//Incrementa a váriavel.
 } 
 */
+
+//Outro exemplo interessante, com padrão idf-sdk/freertos: https://www.usinainfo.com.br/blog/esp32-projeto-com-sensor-de-fluxo-de-agua-para-monitoramento-via-wifi/
