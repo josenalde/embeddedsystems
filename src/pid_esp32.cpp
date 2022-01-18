@@ -66,7 +66,7 @@ void setControlLimits(double min, double max) {
 void setup() {
   Serial.begin(115200);
   adcReadResolution(10);
-  ledcAttachPin(yPin, 0); //channel 0 (pin 32)
+  ledcAttachPin(uPin, 0); //channel 0 (pin 32)
   ledcSetup(0, 1000, 8); //channel, freq (Hz), resolution (bits)
   sp = 400; // considering 1-1023
   pinMode(uPin, OUTPUT);
@@ -81,7 +81,8 @@ void loop() {
   // voltageInput
   voltageY = (VCC/1024)*y;
   computeU();
-  ledcWrite(0, u); //ESP32
+  ledcWrite(0, u); //ESP32 PWM
+  //dacWrite(uPin, u); // 0 <= u <= 255 DAC
   //analogWrite(uPin, u); // for open loop, use 255 for instance (UNO)
   Serial.println(y);
   //Serial.println(kp);
