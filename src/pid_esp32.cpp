@@ -65,7 +65,7 @@ void setControlLimits(double min, double max) {
                      
 void setup() {
   Serial.begin(115200);
-  adcReadResolution(10);
+  analogReadResolution(10);
   ledcAttachPin(uPin, 0); //channel 0 (pin 32)
   ledcSetup(0, 1000, 8); //channel, freq (Hz), resolution (bits)
   sp = 400; // considering 1-1023
