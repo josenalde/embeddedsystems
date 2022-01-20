@@ -73,9 +73,13 @@ void setup() {
   pinMode(yPin, INPUT);
   setControlLimits(0, 255); // 255 = 5V PWM
   setSampleTime(10);
-  setTunings(0.05, 0.5, 0.1);
-  //setTunings(2, 0.8, 0.2);
+  //setTunings(0.05, 0.5, 0.1);
+  //setTunings(2, 0.8, 0.2); // boa resposta
   //setTunings(1.41, 1.41/4.04, kp*2.92 );
+  //setTunings(1.5, 0.8, 0.2); // boa resposta
+  setTunings(1.5, 0.8, 1);
+  dacWrite(uPin, 0);
+  delay(5000);
   
 }  
                             
@@ -86,7 +90,7 @@ void loop() {
   computeU();
   //ledcWrite(0, u); //ESP32
   //analogWrite(uPin, u); // for open loop, use 255 for instance (UNO)
-  dacWrite(uPin, u); //ESP32 pure DAC
+  dacWrite(uPin,u); //ESP32 pure DAC
   Serial.print(1023); //upper limit
   Serial.print(" ");
   Serial.print(0); //lower limit
