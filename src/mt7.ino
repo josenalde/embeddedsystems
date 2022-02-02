@@ -28,6 +28,6 @@ void loop() {
 }
  
 void genericTask( void * parameter ){
-    delay(20000);
+    delay(20000); //delayMicroseconds() não utiliza interrupções, portanto, funcionará normalmente.
     vTaskDelete(NULL);
 }
