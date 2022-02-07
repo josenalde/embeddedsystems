@@ -3,7 +3,7 @@
 #define pinBUTTON    23 //pino de interrupção (botão)
 #define DEBOUNCETIME 10 //tempo máximo de debounce para o botão (ms)
 
-#define pinREDled    2 //pino do led VERMELHO
+#define pinBLUEled    2 //pino do led AZUL (internal ESP32)
 #define pinGREENled  4 //pino do led VERDE
 
 //É DECLARADA VOLÁTIL PORQUE SERÁ COMPARTILHADA PELO ISR E PELO CÓDIGO PRINCIPAL
@@ -33,6 +33,7 @@ void IRAM_ATTR handleButtonInterrupt() {
       numberOfButtonInterrupts++;
       lastState = digitalRead(pinBUTTON);  
       debounceTimeout = xTaskGetTickCount(); //versão do millis () que funciona a partir da interrupção //version of millis() that works from interrupt
+                                             // não usa millis() dentro de ISR, pois o próprio millis() usa interrupção
     portEXIT_CRITICAL_ISR(&mux);
 }
 
@@ -44,14 +45,14 @@ void setup()
   Serial.println(taskMessage); //mostra o core que o botão está executando
 
   // set up button Pin
-  pinMode (pinREDled, OUTPUT);
+  pinMode (pinBLUEled, OUTPUT);
   pinMode (pinGREENled, OUTPUT);
   
   pinMode(pinBUTTON, INPUT_PULLUP);  // Pull up to 3.3V on input - some buttons already have this done
 
   attachInterrupt(digitalPinToInterrupt(pinBUTTON), handleButtonInterrupt, CHANGE);   //configura a interrupção do botão no evento CHANGE para a função handleButtonInterrupt  
 
-  digitalWrite(pinREDled, HIGH); //inicializa o LED VERMELHO como aceso
+  digitalWrite(pinBLUEled, HIGH); //inicializa o LED AZUL como aceso
 }
 
 void loop()
@@ -74,16 +75,16 @@ void loop()
     if( (millis() - saveDebounceTimeout) > DEBOUNCETIME && (save != 0) )
     {
            //se o botão está pressionado
-           //liga o led verde e apaga o vermelho
+           //liga o led verde e apaga o azul
            //caso contrário 
-           //liga o led vermelho e apaga o verde
+           //liga o led azul e apaga o verde
            if(currentState) {              
               digitalWrite(pinGREENled, HIGH);
-              digitalWrite(pinREDled, LOW);
+              digitalWrite(pinBLUEled, LOW);
             }
             else{
               digitalWrite(pinGREENled, LOW);
-              digitalWrite(pinREDled, HIGH);
+              digitalWrite(pinBLUEled, HIGH);
             }
             Serial.printf("Button Interrupt Triggered %d times, current State=%u, time since last trigger %dms\n", save, currentState, millis() - saveDebounceTimeout);
             portENTER_CRITICAL_ISR(&mux);  //início da seção crítica
